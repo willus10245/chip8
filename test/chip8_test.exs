@@ -38,6 +38,18 @@ defmodule Chip8Test do
     assert %{pc: 5} = execute(state, "1005")
   end
 
+  test "3XNN skips if vX == NN" do
+    state = %State{pc: 0x200, v0: 0x0A}
+
+    assert %{pc: 0x202} = execute(state, "300A")
+  end
+
+  test "3XNN doesn't skip if vX != NN" do
+    state = %State{pc: 0x200, v0: 0x0B}
+
+    assert %{pc: 0x200} = execute(state, "300A")
+  end
+
   test "6XNN sets a register" do
     state = State.new()
 
