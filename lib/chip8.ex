@@ -98,6 +98,24 @@ defmodule Chip8 do
     Map.update!(state, vX, &(rem(&1 + val, 256)))
   end
 
+  def execute(state, <<"8", x, y, "0">>) do
+    vX = String.to_existing_atom("v" <> <<x>>)
+    vY = String.to_existing_atom("v" <> <<y>>)
+    
+    Map.put(state, vX, state[vY])
+  end
+
+  def execute(state, <<"9", x, y, "0">>) do
+    vX = String.to_existing_atom("v" <> <<x>>)
+    vY = String.to_existing_atom("v" <> <<y>>)
+
+    if state[vX] != state[vY] do
+      %{state | pc: state.pc + 2}
+    else
+      state
+    end
+  end
+
   def execute(state, <<"A", n1, n2, n3>>) do
     new_i = parse_hex(<<n1, n2, n3>>)
     %{state | i: new_i}
