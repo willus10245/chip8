@@ -98,6 +98,24 @@ defmodule Chip8Test do
     assert %{v0: 1} = execute(state, "8010")
   end
 
+  test "8XY1 sets vX to value of vX | vY" do
+    state = %State{v3: 0x10, v4: 0xA3}
+
+    assert %{v3: 0xB3} = execute(state, "8341")
+  end
+
+  test "8XY2 sets vX to value of vX & vY" do
+    state = %State{v3: 0x13, v4: 0x1A}
+
+    assert %{v3: 0x12} = execute(state, "8342")
+  end
+
+  test "8XY3 sets vX to value of vX XOR vY" do
+    state = %State{v5: 0x13, v6: 0x1A}
+
+    assert %{v5: 0x9} = execute(state, "8563")
+  end
+
   test "9XY0 skips if vX != vY" do  
     state = %State{pc: 0x200, v0: 0xDE, v1: 0xDD}
 

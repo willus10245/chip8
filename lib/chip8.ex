@@ -105,6 +105,27 @@ defmodule Chip8 do
     Map.put(state, vX, state[vY])
   end
 
+  def execute(state, <<"8", x, y, "1">>) do
+    vX = String.to_existing_atom("v" <> <<x>>)
+    vY = String.to_existing_atom("v" <> <<y>>)
+    
+    Map.put(state, vX, state[vX] ||| state[vY])
+  end
+
+  def execute(state, <<"8", x, y, "2">>) do
+    vX = String.to_existing_atom("v" <> <<x>>)
+    vY = String.to_existing_atom("v" <> <<y>>)
+    
+    Map.put(state, vX, state[vX] &&& state[vY])
+  end
+
+  def execute(state, <<"8", x, y, "3">>) do
+    vX = String.to_existing_atom("v" <> <<x>>)
+    vY = String.to_existing_atom("v" <> <<y>>)
+    
+    Map.put(state, vX, bxor(state[vX], state[vY]))
+  end
+
   def execute(state, <<"9", x, y, "0">>) do
     vX = String.to_existing_atom("v" <> <<x>>)
     vY = String.to_existing_atom("v" <> <<y>>)
