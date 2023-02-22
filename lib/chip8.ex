@@ -137,6 +137,42 @@ defmodule Chip8 do
     Map.put(state, vX, bxor(state[vX], state[vY]))
   end
 
+  def execute(state, <<"8", x, y, "4">>) do
+    vX = String.to_existing_atom("v" <> <<x>>)
+    vY = String.to_existing_atom("v" <> <<y>>)
+    sum = state[vX] + state[vY]
+    vF = div(sum, 256)
+    sum = rem(sum, 256)
+
+    state
+    |> Map.put(vX, sum)
+    |> Map.put(:vF, vF)
+  end
+
+  def execute(state, <<"8", x, y, "5">>) do
+    vX = String.to_existing_atom("v" <> <<x>>)
+    vY = String.to_existing_atom("v" <> <<y>>)
+    diff = state[vX] - state[vY]
+    vF = if diff >= 0, do: 1, else: 0
+    diff = if diff >= 0, do: diff, else: diff + 256
+
+    state
+    |> Map.put(vX, diff)
+    |> Map.put(:vF, vF)
+  end
+
+  def execute(state, <<"8", x, y, "7">>) do
+    vX = String.to_existing_atom("v" <> <<x>>)
+    vY = String.to_existing_atom("v" <> <<y>>)
+    diff = state[vY] - state[vX]
+    vF = if diff >= 0, do: 1, else: 0
+    diff = if diff >= 0, do: diff, else: diff + 256
+
+    state
+    |> Map.put(vX, diff)
+    |> Map.put(:vF, vF)
+  end
+
   def execute(state, <<"9", x, y, "0">>) do
     vX = String.to_existing_atom("v" <> <<x>>)
     vY = String.to_existing_atom("v" <> <<y>>)

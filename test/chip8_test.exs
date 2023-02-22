@@ -129,6 +129,36 @@ defmodule Chip8Test do
     assert %{v5: 0x9} = execute(state, "8563")
   end
 
+  test "8XY4 sets vX to vX + vY" do
+    state = %State{v7: 0xA, v8: 0xA}
+
+    assert %{v7: 0x14, vF: 0} = execute(state, "8784")
+  end
+
+  test "8XY4 handles overflow" do
+    state = %State{v7: 0xFF, v8: 0xA}
+
+    assert %{v7: 0x9, vF: 1} = execute(state, "8784")
+  end
+
+  test "8XY5 sets vX to vX - vY" do
+    state = %State{v7: 0xA, v8: 0x6}
+
+    assert %{v7: 0x4, vF: 1} = execute(state, "8785")
+  end
+
+  test "8XY5 handles underflow" do
+    state = %State{v7: 0xA, v8: 0x6}
+
+    assert %{v8: 0xFC, vF: 0} = execute(state, "8875")
+  end
+
+  test "8XY7 sets vX to vX - vY" do
+    state = %State{v7: 0x6, v8: 0xA}
+
+    assert %{v7: 0x4, vF: 1} = execute(state, "8787")
+  end
+
   test "9XY0 skips if vX != vY" do  
     state = %State{pc: 0x200, v0: 0xDE, v1: 0xDD}
 
