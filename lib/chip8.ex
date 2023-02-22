@@ -73,6 +73,17 @@ defmodule Chip8 do
     end
   end
 
+  def execute(state, <<"5", x, y, "0">>) do
+    vX = String.to_existing_atom("v" <> <<x>>)
+    vY = String.to_existing_atom("v" <> <<y>>)
+
+    if state[vX] == state[vY] do
+      %{state | pc: state.pc + 2}
+    else
+      state
+    end
+  end
+
   def execute(state, <<"6", x, n1, n2>>) do
     vX = String.to_existing_atom("v" <> <<x>>)
     val = parse_hex(<<n1, n2>>)
