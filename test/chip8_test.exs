@@ -32,10 +32,23 @@ defmodule Chip8Test do
     assert new_display == Display.new()
   end
 
+  test "00EE returns to pc on top of stack" do
+    state = %State{pc: 0x555, stack: [0x200]}
+
+    assert %{pc: 0x200, stack: []} = execute(state, "00EE")
+  end
+
   test "1NNN sets the program count" do
     state = %State{pc: 0}
 
     assert %{pc: 5} = execute(state, "1005")
+  end
+
+  test "2NNN sets program count and puts old pc on stack" do
+    state = %State{pc: 0x200, stack: []}
+
+    assert %{pc: 0x311, stack: [0x200]}
+      = execute(state, "2311")
   end
 
   test "3XNN skips if vX == NN" do

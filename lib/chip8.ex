@@ -46,9 +46,20 @@ defmodule Chip8 do
     %{state | display: Display.new(), draw?: true}
   end
 
+  def execute(state, "00EE") do
+    [new_pc | rest_stack] = state.stack
+    %{state | pc: new_pc, stack: rest_stack}
+  end
+
   def execute(state, <<"1", n1, n2, n3>>) do
     new_pc = parse_hex(<<n1, n2, n3>>)
     %{state | pc: new_pc}
+  end
+
+  def execute(state, <<"2", n1, n2, n3>>) do
+    new_pc = parse_hex(<<n1, n2, n3>>)
+    old_pc = state.pc
+    %{state | pc: new_pc, stack: [old_pc | state.stack]}
   end
 
   def execute(state, <<"3", x, n1, n2>>) do
