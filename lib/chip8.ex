@@ -189,6 +189,19 @@ defmodule Chip8 do
     %{state | i: new_i}
   end
 
+  def execute(state, <<"B", n1, n2, n3>>) do
+    val = parse_hex(<<n1, n2, n3>>)
+    %{state | pc: val + state.v0}
+  end
+
+  def execute(state, <<"C", x, n1, n2>>) do
+    vX = String.to_existing_atom("v" <> <<x>>)
+    val = parse_hex(<<n1, n2>>)
+    rand_n = :rand.uniform(0xFFFF)
+    
+    Map.put(state, vX, rand_n &&& val)
+  end
+
   def execute(state, <<"D", x, y, n>>) do
     vX = String.to_existing_atom("v" <> <<x>>)
     vY = String.to_existing_atom("v" <> <<y>>)

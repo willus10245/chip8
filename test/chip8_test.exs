@@ -5,6 +5,7 @@ defmodule Chip8Test do
   alias Chip8.{Display, Memory, Rom, State}
 
   import Chip8
+  import Bitwise
 
   test "runs" do
     rom_path = Path.expand("../roms/ibm.ch8", __DIR__)
@@ -175,6 +176,22 @@ defmodule Chip8Test do
     state = State.new()
 
     assert %{i: 4} = execute(state, "A004")
+  end
+
+  test "BNNN sets pc to v0 + NNN" do
+    state = %State{pc: 0x200, v0: 5}
+
+    assert %{pc: 0x405} = execute(state, "B400")
+  end
+
+  # TODO: is there a better way to test this?
+  test "CXNN sets vX to a random number & NN" do
+    state = State.new()
+    nn = 0x38
+   
+    %{v1: v1} = execute(state, "C1" <> Integer.to_string(nn, 16))
+
+    assert v1 == (v1 &&& nn)
   end
 
   describe "Dxyn: Display n-byte sprite starting at memory location I at (Vx, Vy), set VF = collision" do
