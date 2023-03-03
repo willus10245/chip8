@@ -241,6 +241,11 @@ defmodule Chip8 do
     %{state | display: new_display, vF: new_vf, draw?: true}
   end
 
+  def execute(state, <<"F", x, "29">>) do
+    vX = String.to_existing_atom("v" <> <<x>>)
+    %{state | i: state[vX] * 5}
+  end
+
   def opcode(byte1, byte2) do
     (byte1 <<< 8 ||| byte2)
     |> Integer.to_string(16)

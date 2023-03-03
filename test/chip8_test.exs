@@ -287,4 +287,44 @@ defmodule Chip8Test do
       assert new_state.vF == 1
     end
   end
+
+  test "FX29 sets i to address of character stored in X (char * 5)" do
+    state = %State{v0: 0, v1: 0, v2: 0xC, i: 0, memory: Memory.new(), display: Display.new()}
+    expected_i = 0xC * 5
+
+    assert %{display: display, i: ^expected_i} = 
+      state
+      |> execute("F229")
+      |> execute("D015")
+
+      assert display[{0, 0}] == 1
+      assert display[{1, 0}] == 1
+      assert display[{2, 0}] == 1
+      assert display[{3, 0}] == 1
+      assert display[{4, 0}] == 0
+
+      assert display[{0, 1}] == 1
+      assert display[{1, 1}] == 0
+      assert display[{2, 1}] == 0
+      assert display[{3, 1}] == 0
+      assert display[{4, 1}] == 0
+
+      assert display[{0, 2}] == 1
+      assert display[{1, 2}] == 0
+      assert display[{2, 2}] == 0
+      assert display[{3, 2}] == 0
+      assert display[{4, 2}] == 0
+
+      assert display[{0, 3}] == 1
+      assert display[{1, 3}] == 0
+      assert display[{2, 3}] == 0
+      assert display[{3, 3}] == 0
+      assert display[{4, 3}] == 0
+
+      assert display[{0, 4}] == 1
+      assert display[{1, 4}] == 1
+      assert display[{2, 4}] == 1
+      assert display[{3, 4}] == 1
+      assert display[{4, 4}] == 0
+  end
 end
