@@ -288,6 +288,36 @@ defmodule Chip8Test do
     end
   end
 
+  test "FX07 sets vX to value of delay timer" do
+    state = %State{v0: 0, delay_timer: 0x12}
+
+    assert %{v0: 0x12} = execute(state, "F007")
+  end
+
+  test "FX15 sets delay timer to value of vX" do
+    state = %State{v0: 0x12, delay_timer: 0}
+
+    assert %{delay_timer: 0x12} = execute(state, "F015")
+  end
+
+  test "FX18 sets sound timer to value of vX" do
+    state = %State{v0: 0x15, sound_timer: 0}
+
+    assert %{sound_timer: 0x15} = execute(state, "F018")
+  end
+
+  test "FX1E adds vX to i" do
+    state = %State{v1: 5, i: 5}
+    
+    assert %{i: 0xA} = execute(state, "F11E")
+  end
+
+  test "FX1E sets vF to 1 on 'overflow'" do
+    state = %State{v1: 5, i: 0xFFF}
+    
+    assert %{i: 0x1004, vF: 1} = execute(state, "F11E")
+  end
+
   test "FX29 sets i to address of character stored in X (char * 5)" do
     state = %State{v0: 0, v1: 0, v2: 0xC, i: 0, memory: Memory.new(), display: Display.new()}
     expected_i = 0xC * 5

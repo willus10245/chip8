@@ -241,6 +241,35 @@ defmodule Chip8 do
     %{state | display: new_display, vF: new_vf, draw?: true}
   end
 
+  def execute(state, <<"F", x, "07">>) do
+    vX = String.to_existing_atom("v" <> <<x>>)
+    
+    Map.put(state, vX, state.delay_timer)
+  end
+
+  def execute(state, <<"F", x, "15">>) do
+    vX = String.to_existing_atom("v" <> <<x>>)
+
+    %{state | delay_timer: state[vX]}
+  end
+
+  def execute(state, <<"F", x, "18">>) do
+    vX = String.to_existing_atom("v" <> <<x>>)
+
+    %{state | sound_timer: state[vX]}
+  end
+
+  def execute(state, <<"F", x, "1E">>) do
+    vX = String.to_existing_atom("v" <> <<x>>)
+    val = state[vX]
+
+    new_i = state.i + val
+
+    new_vf = if new_i > 0xFFF, do: 1, else: 0
+
+    %{state | i: new_i, vF: new_vf}
+  end
+
   def execute(state, <<"F", x, "29">>) do
     vX = String.to_existing_atom("v" <> <<x>>)
     %{state | i: state[vX] * 5}
